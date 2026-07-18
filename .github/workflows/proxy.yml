@@ -38,6 +38,6 @@ jobs:
           # Wait 3 seconds for the proxy to initialize
           sleep 3
           
-          # Request a raw TCP tunnel from Serveo
-          ssh -o StrictHostKeyChecking=no -R 0:localhost:10000 serveo.net
+          # Force a custom TCP port on Serveo
+          ssh -o StrictHostKeyChecking=no -R 54321:localhost:10000 serveo.net
           
