@@ -1,5 +1,8 @@
 FROM debian:bookworm-slim
 
+# Force non-interactive mode for apt-get
+ENV DEBIAN_FRONTEND=noninteractive
+
 # Install Dante and Playit
 RUN apt-get update && apt-get install -y dante-server curl \
     && curl -SsL https://packages.playit.gg/install.sh | bash
