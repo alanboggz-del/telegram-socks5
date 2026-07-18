@@ -3,7 +3,7 @@ name: Run Telegram Proxy
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 */5 * * *' # Automatically restarts every 5 hours
+    - cron: '0 */5 * * *'
   push:
     branches:
       - main
@@ -11,7 +11,7 @@ on:
 jobs:
   run-proxy:
     runs-on: ubuntu-latest
-    timeout-minutes: 290 # Safety stop right before GitHub's 6-hour hard limit
+    timeout-minutes: 290
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -30,18 +30,18 @@ jobs:
       - name: Install Dependencies
         run: pnpm install --no-frozen-lockfile
 
-      - name: Check Live Runner IP
+      - name: Start SOCKS5 Proxy and Tunnel
         run: |
-          echo "======================================"
-          echo "YOUR TEMPORARY PROXY IP IS:"
-          curl https://api.ipify.org
-          echo ""
-          echo "PORT IS: 10000"
-          echo "======================================"
-
-      - name: Start SOCKS5 Proxy
-        run: |
+          # Start the proxy script in the background
           pnpm --filter scripts hello &
-          echo "Proxy started in background. Keeping runner awake..."
+          
+          # Wait 3 seconds for the proxy to initialize
+          sleep 3
+          
+          # Install localtunnel globally and expose port 10000
+          npx localtunnel --port 10000 &
+          
+          echo "Proxy and tunnel initiated. Keeping runner awake..."
+          # Keep the job running
           sleep 17000
           
