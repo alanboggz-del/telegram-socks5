@@ -1,0 +1,38 @@
+name: Run Telegram Proxy
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 */5 * * *' # Automatically restarts every 5 hours
+  push:
+    branches:
+      - main
+
+jobs:
+  run-proxy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 290 # Safety stop right before GitHub's 6-hour hard limit
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Check Live Runner IP
+        run: |
+          echo "======================================"
+          echo "YOUR TEMPORARY PROXY IP IS:"
+          curl https://api.ipify.org
+          echo ""
+          echo "PORT IS: 10000"
+          echo "======================================"
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Start SOCKS5 Proxy
+        run: node index.js
+        
