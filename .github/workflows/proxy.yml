@@ -41,7 +41,7 @@ jobs:
 
       - name: Start SOCKS5 Proxy
         run: |
-          pnpm --filter scripts dev &
+          pnpm --filter scripts hello &
           echo "Proxy started in background. Keeping runner awake..."
           sleep 17000
           
