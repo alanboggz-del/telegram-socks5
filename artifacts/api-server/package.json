@@ -1,45 +1,10 @@
-name: Run Telegram Proxy
-
-on:
-  workflow_dispatch:
-  schedule:
-    - cron: '0 */5 * * *'
-  push:
-    branches:
-      - main
-
-jobs:
-  run-proxy:
-    runs-on: ubuntu-latest
-    timeout-minutes: 290
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'pnpm'
-
-      - name: Install Dependencies
-        run: pnpm install --no-frozen-lockfile
-
-      - name: Start SOCKS5 Proxy and Tunnel
-        run: |
-          # Change directory directly into the actual proxy app folder
-          cd artifacts/api-server
-          
-          # Start the real server start script in the background
-          pnpm start &
-          
-          # Wait 5 seconds for the proxy to fully initialize and listen
-          sleep 5
-          
-          # Force a custom TCP tunnel port on Serveo
-          ssh -o StrictHostKeyChecking=no -R 54321:localhost:10000 serveo.net
+{
+  "name": "api-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {}
+}
