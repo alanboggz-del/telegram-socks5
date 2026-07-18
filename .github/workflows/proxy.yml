@@ -16,28 +16,19 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'pnpm'
-
-      - name: Install Dependencies
-        run: pnpm install --no-frozen-lockfile
 
       - name: Start SOCKS5 Proxy and Tunnel
         run: |
-          # Start the proxy script in the background
-          pnpm --filter scripts hello &
+          # Run a clean, standalone SOCKS5 proxy on port 10000 directly
+          npx socks5-proxy-server --port 10000 &
           
-          # Wait 3 seconds for the proxy to initialize
-          sleep 3
+          # Wait 5 seconds for it to spin up
+          sleep 5
           
-          # Force a custom TCP port on Serveo
+          # Force a custom TCP tunnel port on Serveo
           ssh -o StrictHostKeyChecking=no -R 54321:localhost:10000 serveo.net
           
