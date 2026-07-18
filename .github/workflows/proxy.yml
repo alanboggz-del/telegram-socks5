@@ -16,14 +16,20 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Install and Start SOCKS5 Proxy
+      - name: Install Proxy and Tunnel
         run: |
+          # 1. Install the SOCKS5 proxy
           sudo apt-get update
           sudo apt-get install -y microsocks
           
+          # 2. Start the proxy in the background
           microsocks -p 10000 &
           sleep 3
           
-          # Use 0 to let Serveo automatically assign an available port
-          ssh -o StrictHostKeyChecking=no -R 0:localhost:10000 serveo.net
+          # 3. Download 'bore', a reliable TCP tunnel tool
+          wget https://github.com/ekzhang/bore/releases/download/v0.5.1/bore-v0.5.1-x86_64-unknown-linux-musl.tar.gz
+          tar -xzf bore-v0.5.1-x86_64-unknown-linux-musl.tar.gz
           
+          # 4. Create the tunnel
+          ./bore local 10000 --to bore.pub
+        
