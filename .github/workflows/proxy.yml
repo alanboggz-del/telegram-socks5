@@ -38,10 +38,6 @@ jobs:
           # Wait 3 seconds for the proxy to initialize
           sleep 3
           
-          # Install localtunnel globally and expose port 10000
-          npx localtunnel --port 10000 &
-          
-          echo "Proxy and tunnel initiated. Keeping runner awake..."
-          # Keep the job running
-          sleep 17000
+          # Use Serveo to tunnel port 10000 without any landing page blocks
+          ssh -o StrictHostKeyChecking=no -R 80:localhost:10000 serveo.net
           
