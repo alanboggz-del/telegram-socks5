@@ -10,6 +10,8 @@ servers:
 tags:
   - name: health
     description: Health operations
+  - name: proxy
+    description: SOCKS5 proxy operations
 paths:
   /healthz:
     get:
@@ -24,6 +26,19 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /proxy/status:
+    get:
+      operationId: getProxyStatus
+      tags: [proxy]
+      summary: Get SOCKS5 proxy status
+      description: Returns the current status, host, and port of the SOCKS5 proxy server
+      responses:
+        "200":
+          description: Proxy status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProxyStatus"
 components:
   schemas:
     HealthStatus:
@@ -33,4 +48,22 @@ components:
           type: string
       required:
         - status
-
+    ProxyStatus:
+      type: object
+      properties:
+        running:
+          type: boolean
+        host:
+          type: string
+        port:
+          type: integer
+        startedAt:
+          type: ["string", "null"]
+        connections:
+          type: integer
+      required:
+        - running
+        - host
+        - port
+        - startedAt
+        - connections

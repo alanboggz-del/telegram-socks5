@@ -1,0 +1,27 @@
+kind = "web"
+previewPath = "/"
+title = "SOCKS5 Proxy Status"
+version = "1.0.0"
+id = "artifacts/socks5-status"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 22091
+
+[services.development]
+run = "pnpm --filter @workspace/socks5-status run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/socks5-status", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/socks5-status/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "22091"
+BASE_PATH = "/"
