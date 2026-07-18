@@ -16,19 +16,18 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Start SOCKS5 Proxy and Tunnel
+      - name: Install and Start SOCKS5 Proxy
         run: |
-          # Run a clean, standalone SOCKS5 proxy on port 10000 directly
-          npx socks5-proxy-server --port 10000 &
+          # Install a native, lightweight proxy directly on the Ubuntu machine
+          sudo apt-get update
+          sudo apt-get install -y microsocks
           
-          # Wait 5 seconds for it to spin up
-          sleep 5
+          # Start the proxy on port 10000 in the background
+          microsocks -p 10000 &
           
-          # Force a custom TCP tunnel port on Serveo
+          # Wait 3 seconds for it to fully spin up
+          sleep 3
+          
+          # Forward the connection using Serveo
           ssh -o StrictHostKeyChecking=no -R 54321:localhost:10000 serveo.net
           
