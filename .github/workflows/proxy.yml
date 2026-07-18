@@ -1,35 +1,26 @@
-name: Run Telegram Proxy
+name: Run Docker Proxy
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '0 */5 * * *'
   push:
     branches:
       - main
 
 jobs:
-  run-proxy:
+  build-and-run:
     runs-on: ubuntu-latest
     timeout-minutes: 290
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Install Proxy and Tunnel
+      - name: Build and Run Docker
         run: |
-          # 1. Install the SOCKS5 proxy
-          sudo apt-get update
-          sudo apt-get install -y microsocks
+          docker build -t telegram-proxy .
+          docker run -d --name proxy-container telegram-proxy
           
-          # 2. Start the proxy in the background
-          microsocks -p 10000 &
-          sleep 3
+          # Wait for logs to generate the claim code
+          echo "Waiting for playit to generate claim code..."
+          sleep 10
+          docker logs proxy-container
           
-          # 3. Download 'bore', a reliable TCP tunnel tool
-          wget https://github.com/ekzhang/bore/releases/download/v0.5.1/bore-v0.5.1-x86_64-unknown-linux-musl.tar.gz
-          tar -xzf bore-v0.5.1-x86_64-unknown-linux-musl.tar.gz
-          
-          # 4. Create the tunnel
-          ./bore local 10000 --to bore.pub
-        
