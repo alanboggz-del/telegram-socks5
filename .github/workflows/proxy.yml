@@ -18,16 +18,12 @@ jobs:
 
       - name: Install and Start SOCKS5 Proxy
         run: |
-          # Install a native, lightweight proxy directly on the Ubuntu machine
           sudo apt-get update
           sudo apt-get install -y microsocks
           
-          # Start the proxy on port 10000 in the background
           microsocks -p 10000 &
-          
-          # Wait 3 seconds for it to fully spin up
           sleep 3
           
-          # Forward the connection using Serveo
-          ssh -o StrictHostKeyChecking=no -R 54321:localhost:10000 serveo.net
+          # Use 0 to let Serveo automatically assign an available port
+          ssh -o StrictHostKeyChecking=no -R 0:localhost:10000 serveo.net
           
