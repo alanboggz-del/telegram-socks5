@@ -38,6 +38,6 @@ jobs:
           # Wait 3 seconds for the proxy to initialize
           sleep 3
           
-          # Use Serveo to tunnel port 10000 without any landing page blocks
-          ssh -o StrictHostKeyChecking=no -R 80:localhost:10000 serveo.net
+          # Request a raw TCP tunnel from Serveo
+          ssh -o StrictHostKeyChecking=no -R 0:localhost:10000 serveo.net
           
